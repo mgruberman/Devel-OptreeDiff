@@ -10,7 +10,8 @@ use vars qw( $VERSION @EXPORT_OK
              %SIDES
              %ADDR %DONE_GV %LINKS @NODES );
 
-$VERSION = '0.01';
+$VERSION = '0.02';
+@EXPORT_OK = 'fmt_optree_diff';
 
 # Create several functions as a wrapper over the functions from
 # Algorithm::Diff.
@@ -66,19 +67,19 @@ BEGIN
 sub fmt_optree_diff
 {
     my @chunks = map join( "",
-           	           map "$_->[0] $_->[2]\n",
+                              map "$_->[0] $_->[2]\n",
                            @$_ ),
                  &optree_diff;
     for my $chunk ( @chunks )
     {
-	my %seen;
+        my %seen;
 
-	# Elide redundant node paths
+        # Elide redundant node paths
         $chunk =~ s((?<=^..)([^.\s]+)){
-	    ( $seen{$1}++
-	      ? ( ' ' x length $1 )
-	      : $1 )
-	    }meg;
+            ( $seen{$1}++
+              ? ( ' ' x length $1 )
+              : $1 )
+            }meg;
     }
     @chunks;
 }
@@ -99,30 +100,30 @@ sub as_string
     # Delete empty elements
 #    for my $n ( @NODES )
 #    {
-#	delete @{$n}{ grep !defined( $n->{$_ } ), keys %$n };
+#        delete @{$n}{ grep !defined( $n->{$_ } ), keys %$n };
 #    }
     
     augment_nodes_with_node_path();
     
     map( {
-	my $node = $_;
-	
-	my @keys = ( sort { ( ( $a eq 'name' and $b ne 'name' )
-			      ? -1
-			      : ( $a ne 'name' and $b eq 'name' )
-			      ? 1
-			      : ( $a cmp $b ) ) }
-		     keys %$node );
-	
-	map( +( $_ eq 'name'
-		? $node->{'node path'}
-		: defined $node->{$_}
-		? "$node->{'node path'} $_ = $node->{$_}"
-		: () ),
-	     grep( +( $_ ne 'node path' &&
-		      $_ ne 'class' &&
-		      $_ ne 'addr' ),
-		   @keys ) );
+        my $node = $_;
+        
+        my @keys = ( sort { ( ( $a eq 'name' and $b ne 'name' )
+                              ? -1
+                              : ( $a ne 'name' and $b eq 'name' )
+                              ? 1
+                              : ( $a cmp $b ) ) }
+                     keys %$node );
+        
+        map( +( $_ eq 'name'
+                ? $node->{'node path'}
+                : defined $node->{$_}
+                ? "$node->{'node path'} $_ = $node->{$_}"
+                : () ),
+             grep( +( $_ ne 'node path' &&
+                      $_ ne 'class' &&
+                      $_ ne 'addr' ),
+                   @keys ) );
         } @NODES );
 }
     
@@ -130,34 +131,34 @@ sub augment_nodes_with_node_path
 {
     for my $n ( @NODES )
     {
-	my $addr = $n->{'addr'};
-	my $rel_from = $LINKS{$addr};
-	
-	if ( not $rel_from )
-	{
-	    $n->{'node path'} = "/$n->{'name'}";
-	}
-	else
-	{
-	    $n->{'node path'} = $n->{'name'};
-	    while ( $rel_from )
-	    {
-		my $prev;
-		if ( grep $_ eq 'first', keys %$rel_from )
-		{
-		    $prev = $rel_from->{'first'}{'prev'};
-		    $n->{'node path'} = "$rel_from->{'first'}{'name'}/$n->{'node path'}";
-		}
-		elsif ( grep $_ eq 'sibling', keys %$rel_from )
-		{
-		    $prev = $rel_from->{'sibling'}{'prev'};
-		    $n->{'node path'} = "$rel_from->{'sibling'}{'name'}*$n->{'node path'}";
-		}
-		
-		$rel_from = $LINKS{$prev};
-	    }
-	    $n->{'node path'} = "/$n->{'node path'}";
-	}
+        my $addr = $n->{'addr'};
+        my $rel_from = $LINKS{$addr};
+        
+        if ( not $rel_from )
+        {
+            $n->{'node path'} = "/$n->{'name'}";
+        }
+        else
+        {
+            $n->{'node path'} = $n->{'name'};
+            while ( $rel_from )
+            {
+                my $prev;
+                if ( grep $_ eq 'first', keys %$rel_from )
+                {
+                    $prev = $rel_from->{'first'}{'prev'};
+                    $n->{'node path'} = "$rel_from->{'first'}{'name'}/$n->{'node path'}";
+                }
+                elsif ( grep $_ eq 'sibling', keys %$rel_from )
+                {
+                    $prev = $rel_from->{'sibling'}{'prev'};
+                    $n->{'node path'} = "$rel_from->{'sibling'}{'name'}*$n->{'node path'}";
+                }
+                
+                $rel_from = $LINKS{$prev};
+            }
+            $n->{'node path'} = "/$n->{'node path'}";
+        }
     }
 }
 
@@ -183,7 +184,7 @@ sub add_link
     return if not( $from and $to );
 #    $LINKS{ $rel }{ $to } = $from;
     $LINKS{ $to }{ $rel } = { 'prev' => $from,
-			      'name' => $p{'op'}->oldname };
+                              'name' => $p{'op'}->oldname };
 }
 
 BEGIN
@@ -212,8 +213,8 @@ sub B::OP::OptreeDiff_as_string {
     
     push( @NODES,
           { addr => $$op,
-	    name => $op->oldname,
-	    class => $class,
+            name => $op->oldname,
+            class => $class,
             map( +( "op_$_", $op->$_ ),
                  ( 'targ', 'flags', 'private' ) ) } );
     add_link( op => $op,
@@ -275,8 +276,8 @@ sub B::COP::OptreeDiff_as_string {
         for ( qw( label stashpv arybase ) );
     $NODES[-1]{'cop_warnings'} = ${$op->warnings};
     $NODES[-1]{'cop_io'} = cstring( class( $op->io) eq 'SPECIAL'
-				    ? ''
-				    : $op->io->as_string );
+                                    ? ''
+                                    : $op->io->as_string );
 }
 
 sub B::SVOP::OptreeDiff_as_string {
@@ -496,7 +497,8 @@ Devel::OptreeDiff - Produces diffs of optrees
 
 =head1 DESCRIPTION
 
-Runs Algorithm::Diff against two functions.
+Runs Algorithm::Diff against two functions to make writing macros
+easier.
 
 =head2 OPTIONAL EXPORTS
 
@@ -524,7 +526,12 @@ Algorithm::Diff::traverse_sequences( ... )
 
 Algorithm::Diff::traverse_balanced( ... )
 
-=head1 SEE ALSO
+=head1 CAVEATs
+
+This module is still under development. While the code works mostly
+correctly, the test 3-and-or.t expresses a wish that redundant
+information not be included in the output. This module will change in
+small ways until I can get the output looking proper.
 
 =head1 AUTHOR
 

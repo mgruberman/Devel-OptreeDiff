@@ -3,7 +3,9 @@ eg/or_die.pl
 lib/Devel/OptreeDiff.pm
 Makefile.PL
 MANIFEST
-SIGNATURE
+META.yml			Module meta-data (added by MakeMaker)
 README
-t/Devel-OptreeDiff.t
-META.yml                                 Module meta-data (added by MakeMaker)
+SIGNATURE
+t/1-use.t
+t/2-or-die.t
+t/3-and-or.t

@@ -1,40 +1,83 @@
-Devel-OptreeDiff version 0.01
-===========================
+NAME
+    Devel::OptreeDiff - Produces diffs of optrees
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+SYNOPSIS
+      use Devel::OptreeDiff 'fmt_optree_diff';
+      use Data::Dumper 'Dumper';
+      print map "$_\n",
+                fmt_optree_diff( sub { print @_ or die $! },
+                                 sub { print @_ } ) );
+  
+      - /leavesub/lineseq/nextstate*print
+      + /leavesub/lineseq/nextstate*null
+      +                                 .op_flags = 4
+      +                                 .op_private = 1
+      +                                 .op_targ = 0
+      + /leavesub/lineseq/nextstate*null/or
+      +                                    .op_flags = 4
+      +                                    .op_other = 0
+      +                                    .op_private = 1
+      +                                    .op_targ = 0
+      + /leavesub/lineseq/nextstate*null/or/print
+  
+      - /leavesub/lineseq/nextstate*print/pushmark
+      + /leavesub/lineseq/nextstate*null/or/print/pushmark
+  
+      - /leavesub/lineseq/nextstate*print/pushmark*rv2av
+      + /leavesub/lineseq/nextstate*null/or/print/pushmark*rv2av
+  
+      - /leavesub/lineseq/nextstate*print/pushmark*rv2av/gv
+      + /leavesub/lineseq/nextstate*null/or/print/pushmark*rv2av/gv
+  
+      + /leavesub/lineseq/nextstate*null/or/print/pushmark*rv2av/gv.op_flags = 2
+      +                                                            .op_private = 0
+      +                                                            .op_targ = 0
+      + /leavesub/lineseq/nextstate*null/or/print*die
+      +                                              .op_flags = 6
+      +                                              .op_private = 1
+      +                                              .op_targ = 2
+      + /leavesub/lineseq/nextstate*null/or/print*die/pushmark
+      +                                                       .op_flags = 2
+      +                                                       .op_private = 0
+      +                                                       .op_targ = 0
+      + /leavesub/lineseq/nextstate*null/or/print*die/pushmark*rv2sv
+      +                                                             .op_flags = 6
+      +                                                             .op_private = 1
+      +                                                             .op_targ = 15
+      + /leavesub/lineseq/nextstate*null/or/print*die/pushmark*rv2sv/gvsv
+      +                                                                  .GV = main::!
 
-A README file is required for CPAN modules since CPAN extracts the
-README file from a module distribution so that people browsing the
-archive can use it get an idea of the modules uses. It is usually a
-good idea to provide version information here so that people can
-decide whether fixes for the module are worth downloading.
+DESCRIPTION
+    Runs Algorithm::Diff against two functions.
 
-INSTALLATION
+  OPTIONAL EXPORTS
+    fmt_optree_diff( \&code_a, \&code_b, ... )
+        This is like optree_diff except that it returns a list of nicely
+        formatted text descriptions of the changes to the optree.
 
-To install this module type the following:
+    optree_diff( \&code_a, \&code_b, ... )
+        A wrapped call to Algorithm::Diff::diff(). fmt_optree_diff uses this
+        as input.
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+    optree_sdiff( \&code_a, \&code_b, ... )
+        Algorithm::Diff::sdiff( ... )
 
-DEPENDENCIES
+    optree_traverse_sequences( \&code_a, \&code_b, ... )
+        Algorithm::Diff::traverse_sequences( ... )
 
-This module requires these other modules and libraries:
+    optree_traverse_balanced( \&code_a, \&code_b, ... )
+        Algorithm::Diff::traverse_balanced( ... )
 
-  blah blah blah
+SEE ALSO
+AUTHOR
+        Joshua b. Jore <jjore@cpan.org>
 
-COPYRIGHT AND LICENCE
+COPYRIGHT AND LICENSE
+        B::Keywords supplies seven arrays of keywords: @Scalars, @Arrays,
+        @Hashes, @Filehandles, @Symbols, @Functions and @Barewords. The
+        @Symbols array includes the contents of each of @Scalars, @Arrays,
+        @Hashes and @Filehandles. Similarly, @Barewords adds a few
+        non-function keywords (like __DATA__, NULL) to the @Functions array.
 
-Put the correct copyright and licence information here.
-
-Copyright (C) 2004 by A. U. Thor
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.2 or,
-at your option, any later version of Perl 5 you may have available.
-
+        All additions and modifications are welcome.
 
