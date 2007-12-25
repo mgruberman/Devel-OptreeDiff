@@ -1,14 +1,16 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         Devel-OptreeDiff
-version:      0.02
-version_from: lib/Devel/OptreeDiff.pm
-installdirs:  site
-requires:
+--- #YAML:1.0
+name:                Devel-OptreeDiff
+version:             2.0
+abstract:            Produces diffs of optrees
+license:             ~
+author:              
+    - Joshua b. Jore <josh@grenekatz.org>
+generated_by:        ExtUtils::MakeMaker version 6.42
+distribution_type:   module
+requires:     
     Algorithm::Diff:               0
     B:                             0
-    B::Asmdata:                    0
     B::Utils:                      0
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3
