@@ -6,3 +6,5 @@ Revision history for Perl extension Devel::OptreeDiff.
 0.02  same day
     - added tests and caveats
     - added fmt_optree_diff to the export list
+2.0   Tue Dec 25 01:12:13 2007 -0800
+    - apparently a lot of things
