@@ -5,11 +5,10 @@ use base 'Exporter';
 use Algorithm::Diff qw();
 use B qw( svref_2object class cstring sv_undef walkoptree );
 use B::Utils qw();
-use vars qw( $VERSION @EXPORT_OK
+use vars qw( @EXPORT_OK
     %SIDES
     %ADDR %DONE_GV %LINKS @NODES @specialsv_name );
 
-$VERSION   = '2.0';
 @EXPORT_OK = 'fmt_optree_diff';
 
 @specialsv_name
